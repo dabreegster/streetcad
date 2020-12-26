@@ -1828,6 +1828,7 @@ name = "streetcad"
 version = "0.1.0"
 dependencies = [
  "abstutil",
+ "geojson",
  "geom",
  "log",
  "widgetry",

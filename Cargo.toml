@@ -9,6 +9,7 @@ default = ["widgetry/native-backend"]
 
 [dependencies]
 abstutil = { git = "https://github.com/dabreegster/abstreet" }
+geojson = "0.21.0"
 geom = { git = "https://github.com/dabreegster/abstreet" }
 log = "0.4.11"
 widgetry = { git = "https://github.com/dabreegster/abstreet" }

@@ -1,19 +1,24 @@
+use abstutil::CmdArgs;
 use widgetry::{
-    Btn, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Line, Outcome, Panel,
-    SharedAppState, State, Text, Transition, VerticalAlignment, Widget,
+    Btn, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Line, Outcome, Panel, State,
+    Transition, VerticalAlignment, Widget,
 };
 
-fn main() {
-    abstutil::CmdArgs::new().done();
+use self::model::Model;
 
-    widgetry::run(widgetry::Settings::new("StreetCAD"), |ctx| {
-        (App {}, vec![Editor::new(ctx)])
+mod model;
+
+fn main() {
+    let mut args = CmdArgs::new();
+    let input = args.required_free();
+    args.done();
+    let model = Model::load_geojson(input).unwrap();
+
+    widgetry::run(widgetry::Settings::new("StreetCAD"), move |ctx| {
+        let states = vec![Editor::new(ctx, &model)];
+        (model, states)
     });
 }
-
-struct App {}
-
-impl SharedAppState for App {}
 
 struct Editor {
     controls: Panel,
@@ -21,8 +26,9 @@ struct Editor {
 }
 
 impl Editor {
-    fn new(ctx: &mut EventCtx) -> Box<dyn State<App>> {
-        ctx.canvas.map_dims = (500.0, 500.0);
+    fn new(ctx: &mut EventCtx, model: &Model) -> Box<dyn State<Model>> {
+        let bounds = model.get_bounds();
+        ctx.canvas.map_dims = (bounds.max_x, bounds.max_y);
 
         Box::new(Editor {
             controls: Panel::new(Widget::col(vec![Widget::row(vec![
@@ -31,13 +37,13 @@ impl Editor {
             ])]))
             .aligned(HorizontalAlignment::RightInset, VerticalAlignment::TopInset)
             .build(ctx),
-            draw: ctx.upload(Text::from(Line("Yo")).render_autocropped(ctx)),
+            draw: ctx.upload(model.render()),
         })
     }
 }
 
-impl State<App> for Editor {
-    fn event(&mut self, ctx: &mut EventCtx, _: &mut App) -> Transition<App> {
+impl State<Model> for Editor {
+    fn event(&mut self, ctx: &mut EventCtx, _: &mut Model) -> Transition<Model> {
         ctx.canvas_movement();
 
         match self.controls.event(ctx) {
@@ -53,7 +59,7 @@ impl State<App> for Editor {
         Transition::Keep
     }
 
-    fn draw(&self, g: &mut GfxCtx, _: &App) {
+    fn draw(&self, g: &mut GfxCtx, _: &Model) {
         g.clear(Color::BLACK);
 
         g.redraw(&self.draw);
