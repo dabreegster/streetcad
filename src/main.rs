@@ -1,10 +1,10 @@
 use abstutil::CmdArgs;
 use widgetry::{
-    Btn, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Line, Outcome, Panel, State,
-    Transition, VerticalAlignment, Widget,
+    Btn, Cached, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Line, Outcome, Panel,
+    State, Transition, VerticalAlignment, Widget,
 };
 
-use self::model::Model;
+use self::model::{Hovering, Model};
 
 mod model;
 
@@ -22,13 +22,15 @@ fn main() {
 
 struct Editor {
     controls: Panel,
-    draw: Drawable,
+    draw_model: Drawable,
+    hovering: Cached<Hovering, Drawable>,
 }
 
 impl Editor {
     fn new(ctx: &mut EventCtx, model: &Model) -> Box<dyn State<Model>> {
         let bounds = model.get_bounds();
         ctx.canvas.map_dims = (bounds.max_x, bounds.max_y);
+        ctx.canvas.center_on_map_pt(bounds.center());
 
         Box::new(Editor {
             controls: Panel::new(Widget::col(vec![Widget::row(vec![
@@ -37,14 +39,22 @@ impl Editor {
             ])]))
             .aligned(HorizontalAlignment::RightInset, VerticalAlignment::TopInset)
             .build(ctx),
-            draw: ctx.upload(model.render()),
+            draw_model: ctx.upload(model.render()),
+            hovering: Cached::new(),
         })
     }
 }
 
 impl State<Model> for Editor {
-    fn event(&mut self, ctx: &mut EventCtx, _: &mut Model) -> Transition<Model> {
+    fn event(&mut self, ctx: &mut EventCtx, model: &mut Model) -> Transition<Model> {
         ctx.canvas_movement();
+        if ctx.redo_mouseover() {
+            if let Some(pt) = ctx.canvas.get_cursor_in_map_space() {
+                self.hovering.update(model.compute_hovering(pt), |key| {
+                    ctx.upload(key.render(model))
+                });
+            }
+        }
 
         match self.controls.event(ctx) {
             Outcome::Clicked(x) => match x.as_ref() {
@@ -62,7 +72,10 @@ impl State<Model> for Editor {
     fn draw(&self, g: &mut GfxCtx, _: &Model) {
         g.clear(Color::BLACK);
 
-        g.redraw(&self.draw);
+        g.redraw(&self.draw_model);
         self.controls.draw(g);
+        if let Some(ref d) = self.hovering.value() {
+            g.redraw(d);
+        }
     }
 }

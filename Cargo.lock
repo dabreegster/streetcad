@@ -18,7 +18,7 @@ checksum = "d9fe5e32de01730eb1f6b7f5b51c17e03e2325bf40a74f754f04f130043affff"
 [[package]]
 name = "abstutil"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#cff51a46ea205c16c1a85241e2185a45156203e2"
+source = "git+https://github.com/dabreegster/abstreet#af5811c33c7f7c36227555abeebd0ea15bacc4fc"
 dependencies = [
  "bincode",
  "console_log",
@@ -704,7 +704,7 @@ dependencies = [
 [[package]]
 name = "geom"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#cff51a46ea205c16c1a85241e2185a45156203e2"
+source = "git+https://github.com/dabreegster/abstreet#af5811c33c7f7c36227555abeebd0ea15bacc4fc"
 dependencies = [
  "aabb-quadtree",
  "abstutil",
@@ -2239,7 +2239,7 @@ dependencies = [
 [[package]]
 name = "widgetry"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#cff51a46ea205c16c1a85241e2185a45156203e2"
+source = "git+https://github.com/dabreegster/abstreet#af5811c33c7f7c36227555abeebd0ea15bacc4fc"
 dependencies = [
  "abstutil",
  "downcast-rs",
