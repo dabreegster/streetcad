@@ -1,6 +1,6 @@
 use abstutil::CmdArgs;
 use widgetry::{
-    Btn, Cached, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Line, Outcome, Panel,
+    Btn, Cached, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Key, Line, Outcome, Panel,
     State, Transition, VerticalAlignment, Widget,
 };
 
@@ -24,6 +24,7 @@ struct Editor {
     controls: Panel,
     draw_model: Drawable,
     hovering: Cached<Hovering, Drawable>,
+    dragging: Option<(usize, usize)>,
 }
 
 impl Editor {
@@ -41,6 +42,7 @@ impl Editor {
             .build(ctx),
             draw_model: ctx.upload(model.render()),
             hovering: Cached::new(),
+            dragging: None,
         })
     }
 }
@@ -50,9 +52,31 @@ impl State<Model> for Editor {
         ctx.canvas_movement();
         if ctx.redo_mouseover() {
             if let Some(pt) = ctx.canvas.get_cursor_in_map_space() {
-                self.hovering.update(model.compute_hovering(pt), |key| {
-                    ctx.upload(key.render(model))
-                });
+                match self.dragging {
+                    Some((idx1, idx2)) => {
+                        if ctx.is_key_down(Key::LeftControl) {
+                            model.move_pt((idx1, idx2), pt);
+                            self.draw_model = ctx.upload(model.render());
+                            self.hovering.clear();
+                            self.hovering
+                                .update(Some(Hovering::Point(idx1, idx2)), |key| {
+                                    ctx.upload(key.render(model))
+                                });
+                        } else {
+                            self.dragging = None;
+                        }
+                    }
+                    None => {
+                        self.hovering.update(model.compute_hovering(pt), |key| {
+                            ctx.upload(key.render(model))
+                        });
+                        if let Some(Hovering::Point(idx1, idx2)) = self.hovering.key() {
+                            if ctx.is_key_down(Key::LeftControl) {
+                                self.dragging = Some((idx1, idx2));
+                            }
+                        }
+                    }
+                }
             }
         }
 

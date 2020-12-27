@@ -15,12 +15,11 @@ pub struct Model {
     pub objects: Vec<Object>,
 }
 
-// Just indexes into model.objects
-type ID = usize;
-
 #[derive(Clone, PartialEq)]
 pub enum Hovering {
-    Polygon(ID),
+    Polygon(usize),
+    /// (polygon index, point index)
+    Point(usize, usize),
 }
 
 impl SharedAppState for Model {}
@@ -90,12 +89,27 @@ impl Model {
     }
 
     pub fn compute_hovering(&self, cursor: Pt2D) -> Option<Hovering> {
-        for (idx, obj) in self.objects.iter().enumerate() {
+        for (idx1, obj) in self.objects.iter().enumerate() {
             if obj.polygon.contains_pt(cursor) {
-                return Some(Hovering::Polygon(idx));
+                for (idx2, circle) in obj.get_pts().into_iter().enumerate() {
+                    if circle.contains_pt(cursor) {
+                        return Some(Hovering::Point(idx1, idx2));
+                    }
+                }
+                return Some(Hovering::Polygon(idx1));
             }
         }
         None
+    }
+
+    pub fn move_pt(&mut self, id: (usize, usize), pt: Pt2D) {
+        let obj = &mut self.objects[id.0];
+        let mut pts = obj.polygon.clone().into_points();
+        pts[id.1] = pt;
+        if id.1 == 0 {
+            *pts.last_mut().unwrap() = pt;
+        }
+        obj.polygon = Ring::must_new(pts).to_polygon();
     }
 }
 
@@ -124,6 +138,22 @@ impl Hovering {
                 }
                 for circle in obj.get_pts() {
                     batch.push(Color::RED, circle.to_polygon());
+                }
+            }
+            Hovering::Point(idx1, idx2) => {
+                let obj = &model.objects[*idx1];
+                if let Ok(p) = obj.polygon.to_outline(Distance::meters(1.0)) {
+                    batch.push(Color::YELLOW, p);
+                }
+                for (idx, circle) in obj.get_pts().into_iter().enumerate() {
+                    batch.push(
+                        if *idx2 == idx {
+                            Color::CYAN
+                        } else {
+                            Color::RED
+                        },
+                        circle.to_polygon(),
+                    );
                 }
             }
         }
