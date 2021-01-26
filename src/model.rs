@@ -1,4 +1,6 @@
 use std::error::Error;
+use std::fs::File;
+use std::io::Read;
 
 use geojson::{GeoJson, Value};
 
@@ -26,7 +28,9 @@ impl SharedAppState for Model {}
 
 impl Model {
     pub fn load_geojson(path: String) -> Result<Model, Box<dyn Error>> {
-        let raw = abstutil::slurp_file(&path)?;
+        let mut file = File::open(&path)?;
+        let mut raw = Vec::new();
+        file.read_to_end(&mut raw)?;
         let geojson = String::from_utf8(raw)?.parse::<GeoJson>()?;
         let mut objects = Vec::new();
         let features = match geojson {

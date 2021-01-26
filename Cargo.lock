@@ -18,15 +18,14 @@ checksum = "d9fe5e32de01730eb1f6b7f5b51c17e03e2325bf40a74f754f04f130043affff"
 [[package]]
 name = "abstutil"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#001aa836d2be4c1cc3ab00f2d3256c2cd086e5f1"
+source = "git+https://github.com/dabreegster/abstreet#cbf07633275766b12c6f109312fe97ed64aa7c7f"
 dependencies = [
+ "anyhow",
  "bincode",
  "console_log",
  "env_logger",
- "include_dir",
  "instant",
  "itertools",
- "lazy_static",
  "log",
  "num_cpus",
  "scoped_threadpool",
@@ -93,9 +92,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.36"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68803225a7b13e47191bab76f2687382b60d259e8cf37f6e1893658b84bb9479"
+checksum = "afddf7f520a80dbf76e6f50a35bca42a2331ef227a28b3b6dc5c2e2338d114b1"
 
 [[package]]
 name = "approx"
@@ -498,8 +497,9 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 
 [[package]]
 name = "earcutr"
-version = "0.1.0"
-source = "git+https://github.com/donbright/earcutr#aaa18bfdfe581db26bb9869aec170329b4e14f4c"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9734102a0d57b956cac7944d73612ca7bc10a9ada09b128be403c81cd9c7c6d"
 
 [[package]]
 name = "either"
@@ -646,9 +646,9 @@ dependencies = [
 
 [[package]]
 name = "geo"
-version = "0.15.0"
+version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1488b04daa30b25f0beb19c2110fa507484ac8c2b8cad83d548cdda857f7f7a"
+checksum = "d893ed768bba4866e3e16b756c96ed7ef23ca270eac190000fc4e40c5d733467"
 dependencies = [
  "geo-types",
  "geographiclib-rs",
@@ -704,12 +704,13 @@ dependencies = [
 [[package]]
 name = "geom"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#001aa836d2be4c1cc3ab00f2d3256c2cd086e5f1"
+source = "git+https://github.com/dabreegster/abstreet#cbf07633275766b12c6f109312fe97ed64aa7c7f"
 dependencies = [
  "aabb-quadtree",
  "abstutil",
+ "anyhow",
  "earcutr",
- "geo 0.15.0",
+ "geo 0.16.0",
  "geo-booleanop",
  "geojson",
  "histogram",
@@ -742,16 +743,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "glob"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
-
-[[package]]
 name = "glow"
-version = "0.6.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1625b792e2f9267116dd41eb7d325e0ea2572ceba5069451906745e04f852f33"
+checksum = "072136d2c3783f3a92f131acb227bc806d3886278e2a4dc1e9990ec89ef9e70b"
 dependencies = [
  "slotmap",
 ]
@@ -907,28 +902,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "include_dir"
-version = "0.6.1-alpha.0"
-source = "git+https://github.com/dabreegster/include_dir?branch=union#e3b8bf1206e9303dc2727a190b105e7d817a6b3d"
-dependencies = [
- "glob",
- "include_dir_impl",
- "proc-macro-hack",
-]
-
-[[package]]
-name = "include_dir_impl"
-version = "0.6.1-alpha.0"
-source = "git+https://github.com/dabreegster/include_dir?branch=union#e3b8bf1206e9303dc2727a190b105e7d817a6b3d"
-dependencies = [
- "anyhow",
- "proc-macro-hack",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "instant"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -948,9 +921,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
+checksum = "37d572918e350e82412fe766d24b15e6682fb2ed2bbe018280caa810397cb319"
 dependencies = [
  "either",
 ]
@@ -1501,12 +1474,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "proc-macro-hack"
-version = "0.5.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
-
-[[package]]
 name = "proc-macro2"
 version = "1.0.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1736,9 +1703,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.60"
+version = "1.0.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1500e84d27fe482ed1dc791a56eddc2f230046a040fa908c08bda1d9fb615779"
+checksum = "4fceb2595057b6891a4ee808f70054bd2d12f0e97f1cbb78689b59f676df325a"
 dependencies = [
  "itoa",
  "ryu",
@@ -1967,12 +1934,6 @@ checksum = "3e5d7cd7ab3e47dda6e56542f4bbf3824c15234958c6e1bd6aaa347e93499fdc"
 
 [[package]]
 name = "ttf-parser"
-version = "0.8.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7622061403fd00f0820df288e5a580e87d3ce15a1c4313c59fd1ffb77129903f"
-
-[[package]]
-name = "ttf-parser"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62ddb402ac6c2af6f7a2844243887631c4e94b51585b229fcfddb43958cd55ca"
@@ -2036,8 +1997,9 @@ checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
 
 [[package]]
 name = "usvg"
-version = "0.13.0"
-source = "git+https://github.com/RazrFalcon/resvg#9ed484bed55fef174d956a50ac3a7cb7a5b7c904"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49cf4a80e688e21577387cf750f0d6c18cd0dfc524ba9cf3ef7e01eae5301288"
 dependencies = [
  "base64",
  "data-url",
@@ -2239,10 +2201,12 @@ dependencies = [
 [[package]]
 name = "widgetry"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#001aa836d2be4c1cc3ab00f2d3256c2cd086e5f1"
+source = "git+https://github.com/dabreegster/abstreet#cbf07633275766b12c6f109312fe97ed64aa7c7f"
 dependencies = [
  "abstutil",
+ "anyhow",
  "downcast-rs",
+ "geojson",
  "geom",
  "glow",
  "glutin",
@@ -2253,8 +2217,9 @@ dependencies = [
  "lru",
  "lyon",
  "serde",
+ "serde_json",
  "stretch",
- "ttf-parser 0.8.3",
+ "ttf-parser 0.9.0",
  "usvg",
  "winit",
 ]

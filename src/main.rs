@@ -1,7 +1,7 @@
 use abstutil::CmdArgs;
 use widgetry::{
-    Btn, Cached, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Key, Line, Outcome, Panel,
-    State, Transition, VerticalAlignment, Widget,
+    Cached, Color, Drawable, EventCtx, GfxCtx, HorizontalAlignment, Key, Line, Outcome, Panel,
+    State, StyledButtons, Transition, VerticalAlignment, Widget,
 };
 
 use self::model::{Hovering, Model};
@@ -36,7 +36,7 @@ impl Editor {
         Box::new(Editor {
             controls: Panel::new(Widget::col(vec![Widget::row(vec![
                 Line("StreetCAD").small_heading().draw(ctx),
-                Btn::close(ctx),
+                ctx.style().btn_close_widget(ctx),
             ])]))
             .aligned(HorizontalAlignment::RightInset, VerticalAlignment::TopInset)
             .build(ctx),
